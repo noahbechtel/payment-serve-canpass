@@ -21,7 +21,7 @@ router.post('/charge', async (req, res, next) => {
 router.post('/createCustomer', async (req, res, next) => {
   try {
     const {email} = req.body
-    const customer = await stripe.customer.create({
+    const customer = await stripe.customers.create({
       email
     })
     res.json(customer)
@@ -44,7 +44,7 @@ router.post('/createCard', async (req, res, next) => {
 router.get('/getCustomer', async (req, res, next) => {
   try {
     const {customerId} = req.body
-    const customer = await stripe.customer.retrieve(customerId)
+    const customer = await stripe.customers.retrieve(customerId)
     res.json(customer)
   } catch (err) {
     next(err)
