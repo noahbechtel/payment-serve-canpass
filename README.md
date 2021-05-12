@@ -1,5 +1,7 @@
 ## API Endpoints:
 
+Base URL:https://paymenttestserver.herokuapp.com/
+
 POST: /api/payment/charge
 
     Creates charge from a token created from the Stripe frontend component, currently takes a token and amount due. Returns charge object.
