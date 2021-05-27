@@ -3,7 +3,15 @@ const stripe = require('stripe')(
   'sk_test_51Hunp9DchL2cGl0JQw105uqYbZztY8Xdga5yzjyfSljGPIe5ksNfLx2GLnOj9SY7kOY87U2qSVnP1gBSx3QmUs6N00FtU7mnCn'
 )
 module.exports = router
-
+router.post('/intent', async (req, res, next) => {
+  const {amount} = req.body
+  const intent = await stripe.paymentIntents.create({
+    amount: amount,
+    currency: 'usd',
+    setup_future_usage: 'off_session'
+  })
+  res.json(intent)
+})
 router.post('/charge', async (req, res, next) => {
   try {
     const {amountDue, token} = req.body
