@@ -28,42 +28,18 @@ router.post('/intent', async (req, res, next) => {
 
   res.json({intent, customer, ephemeralKey})
 })
-
-router.post('/charge', async (req, res, next) => {
-  try {
-    const {amountDue, token} = req.body
-    const charge = await stripe.charges.create({
-      amount: amountDue,
-      currency: 'usd',
-      description: `Test Charge`,
-      source: token.id
-    })
-    res.json(charge)
-  } catch (err) {
-    next(err)
-  }
-})
-router.post('/createCustomer', async (req, res, next) => {
-  try {
-    const {email} = req.body
-    const customer = await stripe.customers.create({
-      email
-    })
-    res.json(customer)
-  } catch (err) {
-    next(err)
-  }
-})
-router.post('/createCard', async (req, res, next) => {
-  try {
-    const {customerId, cardToken} = req.body
-    const card = await stripe.customers.createSource(customerId, {
-      source: cardToken
-    })
-    res.json(card)
-  } catch (err) {
-    next(err)
-  }
+router.post('/createPaymentMethod', async (req, res, next) => {
+  const {number, exp_month, exp_year, cvc} = req.body
+  const paymentMethod = await stripe.paymentMethods.create({
+    type: 'card',
+    card: {
+      number,
+      exp_month,
+      exp_year,
+      cvc
+    }
+  })
+  res.json(paymentMethod)
 })
 
 router.get('/getCustomer', async (req, res, next) => {
