@@ -4,14 +4,30 @@ const stripe = require('stripe')(
 )
 module.exports = router
 router.post('/intent', async (req, res, next) => {
-  const {amount} = req.body
+  const {amount, email, customerId} = req.body
+  let customer
+  if (customerId) {
+    customer = await stripe.customers.retrieve(customerId)
+  } else {
+    customer = await stripe.customers.create({
+      email
+    })
+  }
+  const ephemeralKey = await stripe.ephemeralKeys.create(
+    {customer: customer.id},
+    {apiVersion: '2020-08-27'}
+  )
+
+  console.log(customer)
   const intent = await stripe.paymentIntents.create({
     amount: amount,
     currency: 'usd',
     setup_future_usage: 'off_session'
   })
-  res.json(intent)
+
+  res.json({intent, customer, ephemeralKey})
 })
+
 router.post('/charge', async (req, res, next) => {
   try {
     const {amountDue, token} = req.body

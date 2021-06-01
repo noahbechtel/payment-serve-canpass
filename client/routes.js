@@ -152,8 +152,10 @@ class CheckoutForm extends React.Component {
       let {data} = await Axios.post('/api/payment/intent', {amount})
       console.log('Card Details:', payload)
       console.log('Card id:', payload.paymentMethod.id)
+      console.log('Customer: ', data.customer)
+      console.log('Ephemeral Key: ', data.ephemeralKey)
 
-      this.payWithCard(stripe, card, data.client_secret)
+      this.payWithCard(stripe, card, data.intent.client_secret)
     }
   }
 
@@ -175,6 +177,7 @@ class CheckoutForm extends React.Component {
         } else {
           // The payment succeeded!
           console.log('Payment Intent id:', result.paymentIntent.id)
+          console.log('Full Result: ', result)
         }
       })
   }
