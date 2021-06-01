@@ -22,7 +22,8 @@ router.post('/intent', async (req, res, next) => {
   const intent = await stripe.paymentIntents.create({
     amount: amount,
     currency: 'usd',
-    setup_future_usage: 'off_session'
+    setup_future_usage: 'off_session',
+    customer: customer.id
   })
 
   res.json({intent, customer, ephemeralKey})
